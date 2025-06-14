@@ -1,3 +1,4 @@
 This is the starter for our hackathon project.
 Current status:
-Data screening is done. Moving onto training.
+1. Data screening is done. Moving onto training.
+2. Done with training it's giving around 60% accuracy and trying to generalize the model to fit real world data.
