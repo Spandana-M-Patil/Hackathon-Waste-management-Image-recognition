@@ -3,6 +3,13 @@ import tensorflow as tf
 import numpy as np
 from PIL import Image
 
+st.title("Smart Garbage Segregation 🗑️")
+
+@st.cache_resource
+def load_model():
+    model_path = "trashClassifier" 
+    
+=======
 # Set title
 st.title("Smart Garbage Segregation 🗑️")
 
@@ -15,10 +22,11 @@ def load_model():
 
 model = load_model()
 
-# Class labels (update these based on your model)
+class_names = ['cardboard', 'glass', 'metal', 'paper', 'plastic', 'trash']
+
 class_names = ['plastic', 'glass', 'metal', 'paper', 'cardboard', 'trash', 'organic', 'e-waste']
 
-# Disposal instructions
+
 disposal_guide = {
     "plastic": "♻️ *Plastic goes in the recycling bin.* Make sure to rinse bottles or containers before throwing them.",
     "glass": "🟡 *Glass should be recycled.* Clean it and avoid mixing with ceramics or broken mirrors.",
@@ -26,24 +34,31 @@ disposal_guide = {
     "paper": "📄 *Paper is recyclable.* Keep it dry and away from food waste.",
     "cardboard": "📦 *Cardboard should be flattened before recycling.* Avoid greasy ones like pizza boxes.",
     "trash": "🚯 *This is general waste.* It cannot be recycled. Put it in the regular trash bin.",
+}
+
+
+=======
     "organic": "🌱 *Organic waste like food scraps can go in a compost bin* if available.",
     "e-waste": "🔌 *Electronics must be taken to an e-waste collection center.* Never put in regular bins.",
 }
 
 
-# Image uploader
 uploaded_file = st.file_uploader("Upload a garbage image", type=["jpg", "png", "jpeg"])
 
 if uploaded_file:
     image = Image.open(uploaded_file).convert("RGB")
     st.image(image, caption="Uploaded Image", use_container_width=True)
 
-    # Preprocess the image
+    img = image.resize((224, 224))
+    img_array = np.array(img) / 255.0
+    img_array = np.expand_dims(img_array, axis=0)  
+
+    predictions = model(img_array)
+    if isinstance(predictions, dict):  
     img = image.resize((224, 224))
     img_array = np.array(img) / 255.0
     img_array = np.expand_dims(img_array, axis=0)  # Add batch dimension
 
-    # Predict
     predictions = model(img_array)
     if isinstance(predictions, dict):  # For some models, output is a dict
         predictions = list(predictions.values())[0]
@@ -52,6 +67,6 @@ if uploaded_file:
     predicted_class = class_names[predicted_index]
     confidence = float(predictions[0][predicted_index])
 
-    # Show result
+    st.success(f"Predicted: **{predicted_class.upper()}**")
     st.success(f"Predicted: **{predicted_class.upper()}** ({confidence * 100:.2f}% confidence)")
     st.info(disposal_guide[predicted_class])
