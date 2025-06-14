@@ -9,12 +9,23 @@ st.title("Smart Garbage Segregation 🗑️")
 def load_model():
     model_path = "trashClassifier" 
     
+=======
+# Set title
+st.title("Smart Garbage Segregation 🗑️")
+
+# Load the model
+@st.cache_resource
+def load_model():
+    model_path = "trashClassifier"  # path to your model folder
     model = tf.keras.layers.TFSMLayer(model_path, call_endpoint="serving_default")
     return model
 
 model = load_model()
 
 class_names = ['cardboard', 'glass', 'metal', 'paper', 'plastic', 'trash']
+
+class_names = ['plastic', 'glass', 'metal', 'paper', 'cardboard', 'trash', 'organic', 'e-waste']
+
 
 disposal_guide = {
     "plastic": "♻️ *Plastic goes in the recycling bin.* Make sure to rinse bottles or containers before throwing them.",
@@ -23,6 +34,12 @@ disposal_guide = {
     "paper": "📄 *Paper is recyclable.* Keep it dry and away from food waste.",
     "cardboard": "📦 *Cardboard should be flattened before recycling.* Avoid greasy ones like pizza boxes.",
     "trash": "🚯 *This is general waste.* It cannot be recycled. Put it in the regular trash bin.",
+}
+
+
+=======
+    "organic": "🌱 *Organic waste like food scraps can go in a compost bin* if available.",
+    "e-waste": "🔌 *Electronics must be taken to an e-waste collection center.* Never put in regular bins.",
 }
 
 
@@ -38,6 +55,12 @@ if uploaded_file:
 
     predictions = model(img_array)
     if isinstance(predictions, dict):  
+    img = image.resize((224, 224))
+    img_array = np.array(img) / 255.0
+    img_array = np.expand_dims(img_array, axis=0)  # Add batch dimension
+
+    predictions = model(img_array)
+    if isinstance(predictions, dict):  # For some models, output is a dict
         predictions = list(predictions.values())[0]
 
     predicted_index = np.argmax(predictions)
@@ -45,4 +68,5 @@ if uploaded_file:
     confidence = float(predictions[0][predicted_index])
 
     st.success(f"Predicted: **{predicted_class.upper()}**")
+    st.success(f"Predicted: **{predicted_class.upper()}** ({confidence * 100:.2f}% confidence)")
     st.info(disposal_guide[predicted_class])
