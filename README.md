@@ -35,11 +35,16 @@ The model can classify garbage into:
 
 ## Project Structure
 
-smart-garbage-segregation/
-├── trashClassifier/ # Saved TensorFlow model (SavedModel format)
-├── app.py # Main Streamlit app file
-├── requirements.txt 
+Hackathon-Waste-management-Image-recognition/
+│
+├── trashClassifier/         # Saved TensorFlow model (SavedModel format)
+│
+├── app.py                   # Main Streamlit app file
+│
+├── requirements.txt
+│
 └── README.md
+
 
 ## Model Format
 
@@ -51,8 +56,8 @@ tf.keras.layers.TFSMLayer("trashClassifier", call_endpoint="serving_default")
 
 ### 1. Clone the Repo
 ```bash
-git clone https://github.com/your-username/smart-garbage-segregation.git
-cd smart-garbage-segregation
+git clone https://github.com/Spandana-M-Patil/Hackathon-Waste-management-Image-recognition.git
+cd Hackathon-Waste-management-Image-recognition/Waste-manage
 ```
 ### 2. Install Dependencies
 ```bash
@@ -62,7 +67,3 @@ pip install -r requirements.txt
 ```bash
 streamlit run app.py
 ```
-
-
-
-
